@@ -26,8 +26,15 @@ vim /etc/hosts
 127.0.0.1 localstack
 
 Dentro do pasta ecommerce-backend
-docker-compose up --build
+docker-compose up --d
+
 ```
+## 🌐 Endpoints da aplicação
+
+Após iniciar o projeto com Docker Compose, os serviços estarão disponíveis nas seguintes portas:
+
+- 🖥️ **Frontend (Next.js):** http://localhost:3000  
+- 🛠️ **Backend (NestJS):** http://localhost:3500
 
 ## 🧠 orders-service (Lambda)
 
