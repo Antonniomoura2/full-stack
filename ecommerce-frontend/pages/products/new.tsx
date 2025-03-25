@@ -1,8 +1,12 @@
 import React from 'react';
 import ProductForm from '../../components/ProductForm';
+import Navbar from '../../components/Navbar';
 
 const NewProductPage: React.FC = () => {
-  return <ProductForm /> 
+  return <>
+    <Navbar />
+    <ProductForm /> 
+    </>
 };
 
 export default NewProductPage;

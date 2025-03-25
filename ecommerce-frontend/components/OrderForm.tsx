@@ -3,7 +3,7 @@ import {
   Button, TextField, Box, Typography, Container,
   Checkbox, FormControlLabel, Grid, CircularProgress
 } from '@mui/material';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
 import apiService from '../services/api.service';
@@ -36,7 +36,7 @@ const OrderForm: React.FC = () => {
       const payload = {
         ...values,
         date: values.date || new Date().toISOString(),
-        total: calculateTotal(values.productIds),
+        total: calculateTotal(values.productIds as unknown as { _id: string; quantity: number }[]),
       };
       if (id) {
         await apiService.put(`/orders/${id}`, payload);
@@ -68,9 +68,9 @@ const OrderForm: React.FC = () => {
   });
 
   const initialProductIds = order
-    ? (order.productIds as any[]).map((p) => ({
+    ? (order.productIds as Product[]).map((p) => ({
         _id: typeof p === 'string' ? p : p._id,
-        quantity: p.quantity || 1,
+        quantity: (p as unknown as {quantity: number}).quantity || 1,
       }))
     : [];
 
@@ -96,7 +96,7 @@ const OrderForm: React.FC = () => {
                 ? [...values.productIds, { _id: productId, quantity: 1 }]
                 : values.productIds.filter((p) => p._id !== productId);
               setFieldValue('productIds', updated);
-              setFieldValue('total', calculateTotal(updated));
+              setFieldValue('total', calculateTotal(updated as unknown as { _id: string; quantity: number }[]));
             };
 
             const handleQuantityChange = (productId: string, qty: number) => {

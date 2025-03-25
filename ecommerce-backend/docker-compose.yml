@@ -34,7 +34,7 @@ services:
       dockerfile: Dockerfile
     container_name: nestjs-container
     ports:
-      - "3000:3000"
+      - "3500:3500"
     environment:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
@@ -55,9 +55,9 @@ services:
       dockerfile: Dockerfile
     container_name: nextjs-container
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://nestjs:3000
+      - NEXT_PUBLIC_API_URL=http://localhost:3500
     depends_on:
       - nestjs
     networks:

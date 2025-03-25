@@ -8,7 +8,7 @@ const Navbar: React.FC = () => {
   const handleNavigation = (path: string) => {
     router.push(path);
   };
-
+  
   return (
     <AppBar position="sticky">
       <Toolbar>

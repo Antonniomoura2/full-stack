@@ -19,6 +19,12 @@ cd full-stack
 cp ecommerce-backend/.env.sample ecommerce-backend/.env
 cp ecommerce-frontend/.env.sample ecommerce-frontend/.env
 
+// Editar o arquivo de hosts
+vim /etc/hosts
+
+// Adicionar essa linha no arquivo
+127.0.0.1 localstack
+
 Dentro do pasta ecommerce-backend
 docker-compose up --build
 ```
