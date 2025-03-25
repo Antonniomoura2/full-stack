@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda para processar pedidos e integrar com MongoDB
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+    Runtime: nodejs18.x
+    Architectures:
+      - x86_64
+
+Resources:
+  processOrderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/process-order.processOrderHandler
+      Environment:
+        Variables:
+          MONGODB_URI: mongodb://172.17.0.1:27017/ecommerce
+      Events:
+        OrderQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt OrdersQueue.Arn
+
+  OrdersQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: orders-queue
+
+Outputs:
+  OrdersQueueUrl:
+    Value: !Ref OrdersQueue
+  ProcessOrderFunctionName:
+    Value: !Ref processOrderFunction

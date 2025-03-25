@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mongo-network
+    restart: always
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack-container
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/var/lib/localstack
+    volumes:
+      - ./localstack-data:/var/lib/localstack
+      - ./localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+    networks:
+      - mongo-network
+    restart: always
+  nestjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs-container
+    ports:
+      - "3000:3000"
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT=http://localstack:4566
+      - AWS_S3_BUCKET=ecommece
+      - MONGODB_URI=mongodb://mongo:27017/ecommerce
+    depends_on:
+      - mongo
+      - localstack
+    networks:
+      - mongo-network
+    restart: always
+
+  nextjs:
+    build:
+      context: ./../ecommerce-frontend
+      dockerfile: Dockerfile
+    container_name: nextjs-container
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://nestjs:3000
+    depends_on:
+      - nestjs
+    networks:
+      - mongo-network
+    restart: always
+
+volumes:
+  mongo-data:
+    driver: local
+  localstack-data:
+    driver: local
+
+networks:
+  mongo-network:
+    driver: bridge

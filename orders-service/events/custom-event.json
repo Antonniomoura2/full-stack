@@ -1,0 +1,8 @@
+{
+    "source": "local.test",
+    "data": {
+      "id": 123,
+      "message": "Olá Lambda"
+    }
+  }
+  
