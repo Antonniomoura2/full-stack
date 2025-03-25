@@ -10,8 +10,6 @@
 **/.eslintcache
 
 **/.env
-**/.env.local
-**/.env.*.local
 
 .DS_Store
 Thumbs.db

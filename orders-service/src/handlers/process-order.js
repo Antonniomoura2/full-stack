@@ -15,20 +15,9 @@ const getTodaySlug = () => {
   return today.toISOString().split("T")[0];
 };
 
-exports.processOrderHandler = async (event) => {
+exports.processOrderHandler = async () => {
   const db = await getDb();
   const ordersCol = db.collection("orders");
-
-  for (const record of event.Records) {
-    const order = JSON.parse(record.body);
-    console.log("📦 Salvando pedido:", order);
-
-    await ordersCol.insertOne({
-      ...order,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  }
 
   const topProducts = await ordersCol.aggregate([
     { $unwind: "$productIds" },
@@ -165,7 +154,7 @@ exports.processOrderHandler = async (event) => {
     { upsert: true }
   );
 
-  console.log(`✅ Relatório diário "${slug}" salvo com KPIs`);
+  console.log(`Relatório diário "${slug}" salvo com KPIs`);
 
   return {
     statusCode: 200,

@@ -8,15 +8,13 @@ export class FileService {
 
   constructor(private configService: ConfigService) {
     this.s3 = new AWS.S3({
-      accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
       region: this.configService.get<string>('AWS_REGION'),
       endpoint: this.configService.get<string>('AWS_ENDPOINT'),
       s3ForcePathStyle: true,
     });
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<{imageUrl: string}> {
+  async uploadFile(file: Express.Multer.File): Promise<{ imageUrl: string }> {
     const params = {
       Bucket: this.configService.get<string>('AWS_S3_BUCKET'),
       Key: file.originalname,
@@ -25,9 +23,11 @@ export class FileService {
     };
 
     try {
-      const uploadResult = await this.s3.upload(params as unknown as AWS.S3.Types.PutObjectRequest).promise();
+      const uploadResult = await this.s3
+        .upload(params as unknown as AWS.S3.Types.PutObjectRequest)
+        .promise();
       return {
-        imageUrl: uploadResult.Location
+        imageUrl: uploadResult.Location,
       };
     } catch (error) {
       throw new Error(`Erro no upload do arquivo: ${error.message}`);
